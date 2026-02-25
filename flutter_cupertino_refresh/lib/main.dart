@@ -9,6 +9,7 @@ class RefreshDemoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const CupertinoApp(
+      debugShowCheckedModeBanner: false,
       theme: CupertinoThemeData(brightness: Brightness.light),
       home: RefreshDemoPage(),
     );
@@ -20,39 +21,55 @@ class RefreshDemoPage extends StatefulWidget {
 
   @override
   State<RefreshDemoPage> createState() => _RefreshDemoPageState();
-}
+} 
 
 class _RefreshDemoPageState extends State<RefreshDemoPage> {
-  // This is where we will put our list of data later!
-  List<String> items = ['Assignment 1', 'Assignment 2', 'Assignment 3'];
+  // An assignment list
+  List<String> items = ['Math Assignment', 'ML Project', 'Flutter Lab'];
+
+  double triggerDistance = 100.0;
+  double indicatorHeight = 60.0;
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-
       child: CustomScrollView(
-
         slivers: <Widget>[
           const CupertinoSliverNavigationBar(
             largeTitle: Text('My Assignments'),
           ),
 
           CupertinoSliverRefreshControl(
-            onRefresh: () async {
+            // Attribute 1
+            refreshTriggerPullDistance: triggerDistance,
 
+            // Attribute 2
+            refreshIndicatorExtent: indicatorHeight,
+
+            // Attribute 3
+            onRefresh: () async {
               await Future.delayed(const Duration(seconds: 2));
+
               setState(() {
                 items.insert(0, 'New Assignment ${items.length + 1}');
               });
             },
           ),
-          
+
+          // Displaying the list items
           SliverList(
             delegate: SliverChildBuilderDelegate(
-              (context, index) => ListTile(
-                title: Text(items[index]),
-                trailing: const Icon(CupertinoIcons.right_chevron),
-              ),
+              (context, index) {
+                return Material(
+                  child: ListTile(
+                    leading: const Icon(CupertinoIcons.book),
+                    title: Text(items[index]),
+                    subtitle: const Text('Due: Friday at 5:00 PM'),
+                    trailing: const Icon(CupertinoIcons.right_chevron),
+                    onTap: () {},
+                  ),
+                );
+              },
               childCount: items.length,
             ),
           ),
